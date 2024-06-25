@@ -39,24 +39,24 @@ class HomePage extends StatelessWidget {
           custom_widgets.MenuBar(
             buttons: [
               custom_widgets.MenuButton(
-                icon: Icons.crop_5_4 ,
+                icon: Icons.crop_5_4,
                 title: 'New Kitchen Countertop',
                 onTap: () {
-                 
+               
                 },
               ),
               custom_widgets.MenuButton(
                 icon: Icons.crop_3_2,
                 title: 'New Island',
                 onTap: () {
-                  
+                 
                 },
               ),
               custom_widgets.MenuButton(
                 icon: Icons.download,
                 title: 'Export to DXF file',
                 onTap: () {
-                  
+              
                 },
               ),
             ],
