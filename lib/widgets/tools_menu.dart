@@ -21,7 +21,7 @@ class _ToolsMenuState extends State<ToolsMenu> {
       height: 60,
       color: const Color(0xFF5B9851),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, 
+        mainAxisAlignment: MainAxisAlignment.end,
         children: widget.buttons.asMap().entries.map((entry) {
           int index = entry.key;
           ToolButton button = entry.value;

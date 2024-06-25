@@ -1,15 +1,15 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 
 class DrawingCanvas extends StatefulWidget {
-  const DrawingCanvas({super.key});
+  const DrawingCanvas({super.key, required this.onClear});
+
+  final VoidCallback onClear;
 
   @override
-  _DrawingCanvasState createState() => _DrawingCanvasState();
+  DrawingCanvasState createState() => DrawingCanvasState();
 }
 
-class _DrawingCanvasState extends State<DrawingCanvas> {
+class DrawingCanvasState extends State<DrawingCanvas> {
   List<Rectangle> rectangles = [];
   Offset start = Offset.zero;
   Offset end = Offset.zero;
@@ -40,6 +40,16 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
         painter: DrawingPainter(rectangles, start, end, drawing),
       ),
     );
+  }
+
+  void clearCanvas() {
+    setState(() {
+      rectangles.clear();
+      start = Offset.zero;
+      end = Offset.zero;
+      drawing = false;
+    });
+    widget.onClear();
   }
 }
 
