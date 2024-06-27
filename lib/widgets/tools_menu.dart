@@ -3,6 +3,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
+/// A widget that represents a tools menu with buttons.
+///
+/// I created this class to provide a customizable tools menu that can hold multiple buttons.
 class ToolsMenu extends StatefulWidget {
   final List<ToolButton> buttons;
 
@@ -12,6 +15,9 @@ class ToolsMenu extends StatefulWidget {
   _ToolsMenuState createState() => _ToolsMenuState();
 }
 
+/// The state class for [ToolsMenu].
+///
+/// This is where I manage the state of the tools menu, including the active button.
 class _ToolsMenuState extends State<ToolsMenu> {
   int? _activeIndex;
 
@@ -37,6 +43,7 @@ class _ToolsMenuState extends State<ToolsMenu> {
     );
   }
 
+  /// Builds a tool button with the given properties.
   Widget _buildToolButton(
     BuildContext context,
     IconData icon,
@@ -81,6 +88,9 @@ class _ToolsMenuState extends State<ToolsMenu> {
   }
 }
 
+/// A class representing a button in the tools menu.
+///
+/// I created this class to encapsulate the properties and behavior of each tool button.
 class ToolButton {
   final IconData icon;
   final String title;

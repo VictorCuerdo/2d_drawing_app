@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+/// A widget that represents a menu bar with buttons.
+///
+/// I created this class to provide a customizable menu bar that can hold multiple buttons.
 class MenuBar extends StatefulWidget {
   final List<MenuButton> buttons;
   final Function(int?) onButtonPressed;
@@ -13,6 +16,9 @@ class MenuBar extends StatefulWidget {
   _MenuBarState createState() => _MenuBarState();
 }
 
+/// The state class for [MenuBar].
+///
+/// This is where I manage the state of the menu bar, including the active button.
 class _MenuBarState extends State<MenuBar> {
   int? _activeIndex;
 
@@ -40,7 +46,6 @@ class _MenuBarState extends State<MenuBar> {
                   }
                 });
                 widget.onButtonPressed(_activeIndex);
-                button.onTap();
               },
               index,
             ),
@@ -50,6 +55,7 @@ class _MenuBarState extends State<MenuBar> {
     );
   }
 
+  /// Builds a menu button with the given properties.
   Widget _buildMenuButton(
     BuildContext context,
     IconData icon,
@@ -87,6 +93,9 @@ class _MenuBarState extends State<MenuBar> {
   }
 }
 
+/// A class representing a button in the menu bar.
+///
+/// I created this class to encapsulate the properties and behavior of each menu button.
 class MenuButton {
   final IconData icon;
   final String title;

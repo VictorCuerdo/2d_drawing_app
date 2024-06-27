@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:dxf/dxf.dart';
 
+/// A widget that represents a drawing canvas.
+///
+/// I created this class to handle the drawing logic for the app.
+/// It allows the user to draw, resize, and move rectangles and text labels.
 class DrawingCanvas extends StatefulWidget {
   const DrawingCanvas({super.key, required this.onClear});
 
+  /// Callback function that gets called when the canvas is cleared.
   final VoidCallback onClear;
 
   @override
   DrawingCanvasState createState() => DrawingCanvasState();
 }
 
+/// The state class for [DrawingCanvas].
+///
+/// This is where I manage the state of the canvas, including drawing,
+/// resizing, moving shapes, and handling undo functionality.
 class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderStateMixin {
   List<Rectangle> rectangles = [];
   List<TextLabel> textLabels = [];
@@ -52,18 +60,21 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     super.dispose();
   }
 
+  /// Activates preset size drawing mode with the given [size].
   void activatePresetSizeDrawing(double size) {
     setState(() {
       _presetSize = size;
     });
   }
 
+  /// Deactivates preset size drawing mode.
   void deactivatePresetSizeDrawing() {
     setState(() {
       _presetSize = null;
     });
   }
 
+  /// Undoes the last action by restoring the previous state.
   void undo() {
     setState(() {
       if (undoStack.isNotEmpty && undoStackLabels.isNotEmpty) {
@@ -73,6 +84,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     });
   }
 
+  /// Saves the current state to the undo stack.
   void _saveStateToUndoStack() {
     undoStack.add(List.from(rectangles));
     undoStackLabels.add(List.from(textLabels));
@@ -251,6 +263,9 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     );
   }
 
+  /// Checks if the new rectangle [newRect] overlaps with any existing rectangles.
+  ///
+  /// If [ignoreRect] is provided, it will be ignored during the overlap check.
   bool overlaps(Rectangle newRect, [Rectangle? ignoreRect]) {
     for (var rect in rectangles) {
       if (rect != ignoreRect && newRect.overlaps(rect)) {
@@ -260,6 +275,9 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     return false;
   }
 
+  /// Finds an available position for the rectangle [rect] within the canvas.
+  ///
+  /// If a suitable position is found, it returns the position; otherwise, it returns null.
   Offset? _findAvailablePosition(Rectangle rect) {
     final Size canvasSize = context.size ?? Size.zero;
     for (double dx = 0; dx < canvasSize.width; dx += rect.rect.width) {
@@ -277,6 +295,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     return null;
   }
 
+  /// Adds a rectangle with the specified [width] and [height] to the canvas.
   void addRectangle(double width, double height) {
     setState(() {
       _saveStateToUndoStack();
@@ -287,6 +306,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     });
   }
 
+  /// Adds a text label with the specified [text] at the given [position].
   void addTextLabel(String text, Offset position) {
     setState(() {
       _saveStateToUndoStack();
@@ -300,6 +320,9 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     });
   }
 
+  /// Clears the canvas by removing all rectangles and text labels.
+  ///
+  /// Calls the [onClear] callback provided by the parent widget.
   void clearCanvas() {
     setState(() {
       _saveStateToUndoStack();
@@ -312,18 +335,21 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     widget.onClear();
   }
 
+  /// Zooms in by increasing the scale factor.
   void zoomIn() {
     setState(() {
       _scale *= 1.2;
     });
   }
 
+  /// Zooms out by decreasing the scale factor.
   void zoomOut() {
     setState(() {
       _scale /= 1.2;
     });
   }
 
+  /// Resets the zoom to the default scale factor and offset.
   void resetZoom() {
     setState(() {
       _scale = 1.0;
@@ -331,6 +357,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     });
   }
 
+  /// Gets the tapped rectangle side if a tap is detected on the edges.
   RectangleSide? _getTappedRectangleSide(Offset position) {
     for (var rect in rectangles) {
       final side = rect.getTappedSide(position);
@@ -341,6 +368,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     return null;
   }
 
+  /// Gets the tapped text label if a tap is detected on a label.
   TextLabel? _getTappedLabel(Offset position) {
     for (var label in textLabels) {
       if ((label.position - position).distance < 30) {
@@ -350,6 +378,7 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
     return null;
   }
 
+  /// Shows a dialog to edit the length of the tapped rectangle side.
   void _showEditDialog(BuildContext context, RectangleSide rectangleSide) {
     final TextEditingController controller = TextEditingController();
     showDialog(
@@ -408,21 +437,14 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
       },
     );
   }
-
-  String generateDxf() {
-    var dxf = DXF.create();
-    rectangles.forEach((rect) {
-      dxf.addEntities(rect.toDxfPolyline());
-    });
-    textLabels.forEach((label) {
-      dxf.addEntities(label.toDxfText());
-    });
-    return dxf.dxfString;
-  }
 }
 
+/// Enum representing the sides of a rectangle.
 enum RectangleSideType { left, right, top, bottom }
 
+/// Class representing a side of a rectangle.
+///
+/// I use this class to handle interactions with the sides of rectangles.
 class RectangleSide {
   final Rectangle rectangle;
   final RectangleSideType side;
@@ -430,18 +452,24 @@ class RectangleSide {
   RectangleSide(this.rectangle, this.side);
 }
 
+/// Class representing a rectangle.
+///
+/// I use this class to manage the properties and behavior of rectangles on the canvas.
 class Rectangle {
   Offset start;
   Offset end;
 
   Rectangle(this.start, this.end);
 
+  /// Gets the rectangle as a [Rect] object.
   Rect get rect => Rect.fromPoints(start, end);
 
+  /// Checks if this rectangle overlaps with another [Rectangle].
   bool overlaps(Rectangle other) {
     return rect.overlaps(other.rect);
   }
 
+  /// Resizes the rectangle based on the new end position and the selected corner.
   void resize(Offset newEnd, Offset corner) {
     if (corner == start) {
       start = newEnd;
@@ -450,17 +478,20 @@ class Rectangle {
     }
   }
 
+  /// Moves the rectangle by the given offset.
   void move(Offset offset) {
     start += offset;
     end += offset;
   }
 
+  /// Translates the rectangle by the given offset.
   Rectangle translate(Offset offset) {
     return Rectangle(start + offset, end + offset);
   }
 
+  /// Gets the tapped side of the rectangle if the tap is detected on the edges.
   RectangleSide? getTappedSide(Offset position) {
-    const edgeThreshold = 20.0;
+    const edgeThreshold = 20.0; 
     if (position.dx >= rect.left - edgeThreshold && position.dx <= rect.left + edgeThreshold) {
       return RectangleSide(this, RectangleSideType.left);
     } else if (position.dx >= rect.right - edgeThreshold && position.dx <= rect.right + edgeThreshold) {
@@ -473,6 +504,7 @@ class Rectangle {
     return null;
   }
 
+  /// Creates a copy of this rectangle with a new length for the specified side.
   Rectangle copyWithNewLength(RectangleSideType side, double newLength) {
     switch (side) {
       case RectangleSideType.left:
@@ -486,6 +518,7 @@ class Rectangle {
     }
   }
 
+  /// Updates the length of the specified side to the new length.
   void updateLength(RectangleSideType side, double newLength) {
     switch (side) {
       case RectangleSideType.left:
@@ -503,6 +536,7 @@ class Rectangle {
     }
   }
 
+  /// Creates a rectangle centered at the given position with the specified width and height.
   factory Rectangle.fromCenter({required Offset center, required double width, required double height}) {
     final halfWidth = width / 2;
     final halfHeight = height / 2;
@@ -511,42 +545,26 @@ class Rectangle {
       center + Offset(halfWidth, halfHeight),
     );
   }
-
-  AcDbPolyline toDxfPolyline() {
-    return AcDbPolyline(
-      vertices: [
-        [start.dx, start.dy],
-        [end.dx, start.dy],
-        [end.dx, end.dy],
-        [start.dx, end.dy]
-      ],
-      isClosed: true,
-      layerName: '0', // Default layer
-    );
-  }
 }
 
+/// Class representing a text label.
+///
+/// I use this class to manage text labels on the canvas.
 class TextLabel {
   String text;
   Offset position;
 
   TextLabel(this.text, this.position);
 
+  /// Moves the text label by the given offset.
   void move(Offset offset) {
     position += offset;
   }
-
-  AcDbText toDxfText() {
-    return AcDbText(
-      x: position.dx,
-      y: position.dy,
-      textString: text,
-      textHeight: 12,
-      layerName: '0',
-    );
-  }
 }
 
+/// Custom painter for the drawing canvas.
+///
+/// I use this class to handle the actual drawing of rectangles and text labels on the canvas.
 class DrawingPainter extends CustomPainter {
   final List<Rectangle> rectangles;
   final List<TextLabel> textLabels;
@@ -622,6 +640,7 @@ class DrawingPainter extends CustomPainter {
     }
   }
 
+  /// Draws the dimensions of the given [rect] on the canvas.
   void _drawDimensions(Canvas canvas, Rect rect, Paint dimensionPaint) {
     const textStyle = TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold);
     final textSpanTop = TextSpan(
@@ -667,6 +686,9 @@ class DrawingPainter extends CustomPainter {
     _drawDimensionLine(canvas, rect.topRight, rect.bottomRight, dimensionPaint, textPainterRight, isHorizontal: false, above: false);
   }
 
+  /// Draws a dimension line between [start] and [end] with the given [paint].
+  ///
+  /// Uses the [textPainter] to draw the dimension text.
   void _drawDimensionLine(Canvas canvas, Offset start, Offset end, Paint paint, TextPainter textPainter, {required bool isHorizontal, required bool above}) {
     const double lineOffset = 20.0;
     const double textOffset = 10.0;
@@ -695,6 +717,9 @@ class DrawingPainter extends CustomPainter {
     }
   }
 
+  /// Draws an arrow at the [position] with the given [paint].
+  ///
+  /// Uses [isHorizontal] and [isStart] to determine the arrow direction.
   void _drawArrow(Canvas canvas, Offset position, {required bool isHorizontal, required Paint paint, required bool isStart}) {
     const double arrowSize = 5.0;
     final Path path = Path();
@@ -728,6 +753,7 @@ class DrawingPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
+  /// Draws the given [text] at the specified [position] on the canvas.
   void _drawText(Canvas canvas, String text, Offset position) {
     const textStyle = TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
     final textSpan = TextSpan(
@@ -754,12 +780,4 @@ class DrawingPainter extends CustomPainter {
     return true;
   }
 }
-
-extension on Offset {
-  Offset normalize() {
-    final double length = distanceSquared == 0 ? 1.0 : distance;
-    return this / length;
-  }
-}
-
 

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'homepage.dart';
 
+/// The loading screen displayed when the app is launched.
+///
+/// I created this class to show an animated loading screen while the app is initializing.
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
 
@@ -11,6 +14,9 @@ class LoadingScreen extends StatefulWidget {
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
+/// The state class for [LoadingScreen].
+///
+/// This is where I handle the animation and the transition to the home screen.
 class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateMixin {
   @override
   void initState() {
@@ -20,8 +26,9 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
     });
   }
 
-  _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 5), () {});
+  /// Navigates to the home screen after a delay.
+  Future<void> _navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 4), () {});
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -40,8 +47,8 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
           children: <Widget>[
             LottieBuilder.asset(
               'assets/animations/loading.json',
-              width: 320,
-              height: 320,
+              width: 250,
+              height: 250,
               fit: BoxFit.fill,
               animate: true,
             ),

@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+/// A widget that represents an arc-shaped floating action menu.
+///
+/// I created this class to provide quick access to common actions such as clearing the canvas,
+/// zooming, and adding text.
 class ArcMenu extends StatefulWidget {
   final Function(BuildContext) showTextDialog;
   final VoidCallback onClearCanvas;
@@ -23,6 +27,9 @@ class ArcMenu extends StatefulWidget {
   _ArcMenuState createState() => _ArcMenuState();
 }
 
+/// The state class for [ArcMenu].
+///
+/// This is where I manage the state of the floating action menu, including its open and close animations.
 class _ArcMenuState extends State<ArcMenu> {
   bool isActiveIcon = false;
 
@@ -96,6 +103,7 @@ class _ArcMenuState extends State<ArcMenu> {
     );
   }
 
+  /// Shows a snackbar with the given [message].
   void showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
@@ -104,4 +112,3 @@ class _ArcMenuState extends State<ArcMenu> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
-
