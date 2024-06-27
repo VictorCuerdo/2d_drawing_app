@@ -58,7 +58,7 @@ class _ToolsMenuState extends State<ToolsMenu> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3.5), 
+        padding: const EdgeInsets.symmetric(horizontal: 3.5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

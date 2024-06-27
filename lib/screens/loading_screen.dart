@@ -21,10 +21,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
   }
 
   _navigateToHome() async {
-    // testing  if the loading screen works as expected
-   // print('Navigating to Home Page');
     await Future.delayed(const Duration(seconds: 4), () {});
-    
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -69,6 +66,12 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 15),
+            Image.asset(
+              'assets/images/moraware_logo.png',
+              width: 200,
+              height: 200,
             ),
           ],
         ),

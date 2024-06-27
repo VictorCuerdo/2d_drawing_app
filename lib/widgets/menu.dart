@@ -5,8 +5,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 class MenuBar extends StatefulWidget {
   final List<MenuButton> buttons;
+  final Function(int?) onButtonPressed;
 
-  const MenuBar({super.key, required this.buttons});
+  const MenuBar({super.key, required this.buttons, required this.onButtonPressed});
 
   @override
   _MenuBarState createState() => _MenuBarState();
@@ -30,7 +31,16 @@ class _MenuBarState extends State<MenuBar> {
               context,
               button.icon,
               button.title,
-              button.onTap,
+              () {
+                setState(() {
+                  if (_activeIndex == index) {
+                    _activeIndex = null;
+                  } else {
+                    _activeIndex = index;
+                  }
+                });
+                widget.onButtonPressed(_activeIndex);
+              },
               index,
             ),
           );
@@ -49,9 +59,6 @@ class _MenuBarState extends State<MenuBar> {
     bool isActive = _activeIndex == index;
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _activeIndex = index;
-        });
         onTap();
       },
       child: Container(
@@ -83,6 +90,7 @@ class MenuButton {
   final IconData icon;
   final String title;
   final Function onTap;
+  final double? size;
 
-  MenuButton({required this.icon, required this.title, required this.onTap});
+  MenuButton({required this.icon, required this.title, required this.onTap, this.size});
 }
