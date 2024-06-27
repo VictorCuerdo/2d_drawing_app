@@ -21,7 +21,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
   }
 
   _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 4), () {});
+    await Future.delayed(const Duration(seconds: 5), () {});
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -40,8 +40,8 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
           children: <Widget>[
             LottieBuilder.asset(
               'assets/animations/loading.json',
-              width: 250,
-              height: 250,
+              width: 320,
+              height: 320,
               fit: BoxFit.fill,
               animate: true,
             ),
