@@ -40,6 +40,7 @@ class _MenuBarState extends State<MenuBar> {
                   }
                 });
                 widget.onButtonPressed(_activeIndex);
+                button.onTap();
               },
               index,
             ),
