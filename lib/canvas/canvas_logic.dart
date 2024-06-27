@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dxf/dxf.dart';
 
 class DrawingCanvas extends StatefulWidget {
   const DrawingCanvas({super.key, required this.onClear});
@@ -407,6 +408,17 @@ class DrawingCanvasState extends State<DrawingCanvas> with SingleTickerProviderS
       },
     );
   }
+
+  String generateDxf() {
+    var dxf = DXF.create();
+    rectangles.forEach((rect) {
+      dxf.addEntities(rect.toDxfPolyline());
+    });
+    textLabels.forEach((label) {
+      dxf.addEntities(label.toDxfText());
+    });
+    return dxf.dxfString;
+  }
 }
 
 enum RectangleSideType { left, right, top, bottom }
@@ -448,7 +460,7 @@ class Rectangle {
   }
 
   RectangleSide? getTappedSide(Offset position) {
-    const edgeThreshold = 20.0; 
+    const edgeThreshold = 20.0;
     if (position.dx >= rect.left - edgeThreshold && position.dx <= rect.left + edgeThreshold) {
       return RectangleSide(this, RectangleSideType.left);
     } else if (position.dx >= rect.right - edgeThreshold && position.dx <= rect.right + edgeThreshold) {
@@ -499,6 +511,19 @@ class Rectangle {
       center + Offset(halfWidth, halfHeight),
     );
   }
+
+  AcDbPolyline toDxfPolyline() {
+    return AcDbPolyline(
+      vertices: [
+        [start.dx, start.dy],
+        [end.dx, start.dy],
+        [end.dx, end.dy],
+        [start.dx, end.dy]
+      ],
+      isClosed: true,
+      layerName: '0', // Default layer
+    );
+  }
 }
 
 class TextLabel {
@@ -509,6 +534,16 @@ class TextLabel {
 
   void move(Offset offset) {
     position += offset;
+  }
+
+  AcDbText toDxfText() {
+    return AcDbText(
+      x: position.dx,
+      y: position.dy,
+      textString: text,
+      textHeight: 12,
+      layerName: '0',
+    );
   }
 }
 
@@ -726,4 +761,5 @@ extension on Offset {
     return this / length;
   }
 }
+
 

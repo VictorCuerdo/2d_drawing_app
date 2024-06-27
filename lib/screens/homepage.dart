@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:drawing_app/widgets/arc_menu.dart';
 import 'package:drawing_app/widgets/menu.dart' as custom_widgets;
 import 'package:drawing_app/widgets/tools_menu.dart' as tools_widgets;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../canvas/canvas_logic.dart';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -82,6 +85,18 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<File> saveDxfFile(String dxfString) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/drawing.dxf');
+    return file.writeAsString(dxfString);
+  }
+
+  void _exportToDxfAndShare() async {
+    final String dxfContent = _canvasKey.currentState!.generateDxf();
+    final File dxfFile = await saveDxfFile(dxfContent);
+    Share.shareXFiles([XFile(dxfFile.path)], text: 'Attached is the DXF file of the drawing.');
   }
 
   @override
@@ -177,9 +192,7 @@ class _HomePageState extends State<HomePage> {
               custom_widgets.MenuButton(
                 icon: Icons.download,
                 title: 'Export to DXF file',
-                onTap: () {
-                  // my export functionality is missing
-                },
+                onTap: _exportToDxfAndShare,
               ),
             ],
             onButtonPressed: _handleMenuButtonPress,
@@ -264,13 +277,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
